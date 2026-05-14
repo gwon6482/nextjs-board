@@ -1,0 +1,78 @@
+import { auth } from "@/lib/auth";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import DeleteButton from "./DeleteButton";
+
+interface Post {
+  _id: string;
+  title: string;
+  content: string;
+  authorNickname: string;
+  author: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+async function getPost(id: string): Promise<Post> {
+  const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+  const res = await fetch(`${baseUrl}/api/posts/${id}`, { cache: "no-store" });
+  if (res.status === 404) notFound();
+  if (!res.ok) throw new Error("글을 불러올 수 없습니다.");
+  const data = await res.json();
+  return data.post;
+}
+
+export default async function PostDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const [post, session] = await Promise.all([getPost(id), auth()]);
+
+  const isAuthor = session?.user?.id === post.author?.toString();
+
+  const date = new Date(post.createdAt).toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return (
+    <div>
+      <div className="mb-4">
+        <Link href="/" className="text-sm text-gray-500 hover:text-blue-600">
+          ← 목록으로
+        </Link>
+      </div>
+
+      <article className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="p-5 border-b border-gray-100">
+          <h1 className="text-xl font-bold text-gray-900 mb-3">{post.title}</h1>
+          <div className="flex items-center justify-between text-sm text-gray-500">
+            <span>{post.authorNickname}</span>
+            <span>{date}</span>
+          </div>
+        </div>
+
+        <div className="p-5">
+          <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">{post.content}</p>
+        </div>
+      </article>
+
+      {isAuthor && (
+        <div className="flex gap-3 mt-4">
+          <Link
+            href={`/posts/${id}/edit`}
+            className="flex-1 text-center py-2.5 border border-gray-300 rounded-lg text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            수정
+          </Link>
+          <DeleteButton postId={id} />
+        </div>
+      )}
+    </div>
+  );
+}
