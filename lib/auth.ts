@@ -33,6 +33,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
+    authorized({ auth }) {
+      // 미들웨어는 모든 요청을 통과시키고, 각 페이지에서 직접 auth() 체크
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
