@@ -3,32 +3,7 @@ import { redirect } from "next/navigation";
 import PostCard from "@/components/PostCard";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-import type { Category } from "@/lib/constants";
-
-interface Post {
-  _id: string;
-  title: string;
-  authorNickname: string;
-  createdAt: string;
-  category: Category;
-}
-
-interface PostsResponse {
-  posts: Post[];
-  total: number;
-  page: number;
-  totalPages: number;
-}
-
-async function getMyPosts(page: number): Promise<PostsResponse> {
-  const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
-  const res = await fetch(`${baseUrl}/api/posts?my=true&page=${page}`, {
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error("글 목록을 불러올 수 없습니다.");
-  return res.json();
-}
+import { getMyPosts } from "@/lib/posts";
 
 export default async function MyPostsPage({
   searchParams,
@@ -41,9 +16,9 @@ export default async function MyPostsPage({
   const { page: pageParam } = await searchParams;
   const page = Math.max(1, parseInt(pageParam ?? "1", 10));
 
-  let data: PostsResponse;
+  let data;
   try {
-    data = await getMyPosts(page);
+    data = await getMyPosts(session.user.id, page);
   } catch {
     return (
       <div className="text-center py-20 text-gray-500">
@@ -61,10 +36,7 @@ export default async function MyPostsPage({
       {posts.length === 0 ? (
         <div className="text-center py-20">
           <p className="text-gray-400 mb-4">작성한 글이 없습니다.</p>
-          <Link
-            href="/posts/new"
-            className="text-sm text-red-600 hover:underline"
-          >
+          <Link href="/posts/new" className="text-sm text-red-600 hover:underline">
             첫 글을 작성해보세요 →
           </Link>
         </div>
@@ -93,9 +65,7 @@ export default async function MyPostsPage({
               <ChevronLeft size={16} />
             </Link>
           )}
-          <span className="text-sm text-gray-600">
-            {page} / {totalPages}
-          </span>
+          <span className="text-sm text-gray-600">{page} / {totalPages}</span>
           {page < totalPages && (
             <Link
               href={`?page=${page + 1}`}

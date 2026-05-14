@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import DeleteButton from "./DeleteButton";
-
+import { getPostById } from "@/lib/posts";
 import type { Category } from "@/lib/constants";
 
 const CATEGORY_COLOR: Record<Category, string> = {
@@ -11,33 +11,15 @@ const CATEGORY_COLOR: Record<Category, string> = {
   유머: "bg-yellow-100 text-yellow-600",
 };
 
-interface Post {
-  _id: string;
-  title: string;
-  content: string;
-  authorNickname: string;
-  author: string;
-  category: Category;
-  createdAt: string;
-  updatedAt: string;
-}
-
-async function getPost(id: string): Promise<Post> {
-  const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
-  const res = await fetch(`${baseUrl}/api/posts/${id}`, { cache: "no-store" });
-  if (res.status === 404) notFound();
-  if (!res.ok) throw new Error("글을 불러올 수 없습니다.");
-  const data = await res.json();
-  return data.post;
-}
-
 export default async function PostDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [post, session] = await Promise.all([getPost(id), auth()]);
+  const [post, session] = await Promise.all([getPostById(id), auth()]);
+
+  if (!post) notFound();
 
   const isAuthor = session?.user?.id === post.author?.toString();
 

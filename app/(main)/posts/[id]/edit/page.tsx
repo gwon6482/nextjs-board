@@ -1,22 +1,7 @@
 import { auth } from "@/lib/auth";
 import { notFound, redirect } from "next/navigation";
 import PostForm from "@/components/PostForm";
-
-interface Post {
-  _id: string;
-  title: string;
-  content: string;
-  author: string;
-}
-
-async function getPost(id: string): Promise<Post> {
-  const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
-  const res = await fetch(`${baseUrl}/api/posts/${id}`, { cache: "no-store" });
-  if (res.status === 404) notFound();
-  if (!res.ok) throw new Error("글을 불러올 수 없습니다.");
-  const data = await res.json();
-  return data.post;
-}
+import { getPostById } from "@/lib/posts";
 
 export default async function EditPostPage({
   params,
@@ -24,7 +9,9 @@ export default async function EditPostPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [post, session] = await Promise.all([getPost(id), auth()]);
+  const [post, session] = await Promise.all([getPostById(id), auth()]);
+
+  if (!post) notFound();
 
   if (!session?.user?.id || session.user.id !== post.author?.toString()) {
     redirect("/");
@@ -38,6 +25,7 @@ export default async function EditPostPage({
         postId={id}
         initialTitle={post.title}
         initialContent={post.content}
+        initialCategory={post.category}
       />
     </div>
   );

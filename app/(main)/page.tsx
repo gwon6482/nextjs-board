@@ -2,30 +2,7 @@ import PostCard from "@/components/PostCard";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CATEGORIES, type Category } from "@/lib/constants";
-
-interface Post {
-  _id: string;
-  title: string;
-  authorNickname: string;
-  createdAt: string;
-  category: Category;
-}
-
-interface PostsResponse {
-  posts: Post[];
-  total: number;
-  page: number;
-  totalPages: number;
-}
-
-async function getPosts(page: number, category: string | null): Promise<PostsResponse> {
-  const baseUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
-  const params = new URLSearchParams({ page: String(page) });
-  if (category) params.set("category", category);
-  const res = await fetch(`${baseUrl}/api/posts?${params}`, { cache: "no-store" });
-  if (!res.ok) throw new Error("글 목록을 불러올 수 없습니다.");
-  return res.json();
-}
+import { getPosts } from "@/lib/posts";
 
 export default async function HomePage({
   searchParams,
@@ -38,7 +15,7 @@ export default async function HomePage({
     ? (categoryParam as Category)
     : null;
 
-  let data: PostsResponse;
+  let data;
   try {
     data = await getPosts(page, activeCategory);
   } catch {
@@ -57,7 +34,6 @@ export default async function HomePage({
 
   return (
     <div>
-      {/* 상단 타이틀 + 글쓰기 버튼 */}
       <div className="flex items-center justify-between mb-3">
         <h1 className="text-lg font-bold text-gray-900">게시판</h1>
         <Link
@@ -68,7 +44,6 @@ export default async function HomePage({
         </Link>
       </div>
 
-      {/* 카테고리 탭 */}
       <div className="flex border-b border-gray-200 mb-4">
         <Link
           href="/?page=1"
@@ -87,7 +62,6 @@ export default async function HomePage({
         ))}
       </div>
 
-      {/* 글 목록 */}
       {posts.length === 0 ? (
         <div className="text-center py-20 text-gray-400">
           {activeCategory ? `${activeCategory} 게시판에 글이 없습니다.` : "아직 작성된 글이 없습니다."}
@@ -107,7 +81,6 @@ export default async function HomePage({
         </div>
       )}
 
-      {/* 페이지네이션 */}
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 mt-8">
           {page > 1 && (
