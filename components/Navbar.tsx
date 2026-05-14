@@ -24,7 +24,7 @@ export default function Navbar() {
       {/* PC 상단 헤더 */}
       <header className="hidden md:block bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-blue-600">
+          <Link href="/" className="text-xl font-bold text-red-600">
             게시판
           </Link>
           <nav className="flex items-center gap-6">
@@ -36,8 +36,8 @@ export default function Navbar() {
                   href={href}
                   className={`text-sm font-medium transition-colors ${
                     isActive(href)
-                      ? "text-blue-600"
-                      : "text-gray-600 hover:text-blue-600"
+                      ? "text-red-600"
+                      : "text-gray-600 hover:text-red-600"
                   }`}
                 >
                   {label}
@@ -58,7 +58,7 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="text-sm text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1"
+                className="text-sm text-gray-600 hover:text-red-600 transition-colors flex items-center gap-1"
               >
                 <LogIn size={14} />
                 로그인
@@ -71,7 +71,7 @@ export default function Navbar() {
       {/* 모바일 상단 타이틀 */}
       <header className="md:hidden bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="h-12 flex items-center justify-center">
-          <Link href="/" className="text-lg font-bold text-blue-600">
+          <Link href="/" className="text-lg font-bold text-red-600">
             게시판
           </Link>
         </div>
@@ -83,7 +83,7 @@ export default function Navbar() {
           <Link
             href="/"
             className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-xs ${
-              isActive("/") ? "text-blue-600" : "text-gray-500"
+              isActive("/") ? "text-red-600" : "text-gray-500"
             }`}
           >
             <Home size={20} />
@@ -95,7 +95,7 @@ export default function Navbar() {
               <Link
                 href="/posts/new"
                 className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-xs ${
-                  isActive("/posts/new") ? "text-blue-600" : "text-gray-500"
+                  isActive("/posts/new") ? "text-red-600" : "text-gray-500"
                 }`}
               >
                 <PenSquare size={20} />
@@ -104,7 +104,7 @@ export default function Navbar() {
               <Link
                 href="/my-posts"
                 className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-xs ${
-                  isActive("/my-posts") ? "text-blue-600" : "text-gray-500"
+                  isActive("/my-posts") ? "text-red-600" : "text-gray-500"
                 }`}
               >
                 <BookOpen size={20} />
@@ -122,7 +122,7 @@ export default function Navbar() {
             <Link
               href="/login"
               className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-xs ${
-                isActive("/login") ? "text-blue-600" : "text-gray-500"
+                isActive("/login") ? "text-red-600" : "text-gray-500"
               }`}
             >
               <LogIn size={20} />

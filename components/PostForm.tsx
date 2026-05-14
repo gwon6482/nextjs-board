@@ -2,17 +2,26 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { CATEGORIES, type Category } from "@/lib/constants";
 
 interface PostFormProps {
   initialTitle?: string;
   initialContent?: string;
+  initialCategory?: Category;
   postId?: string;
   mode: "create" | "edit";
 }
 
-export default function PostForm({ initialTitle = "", initialContent = "", postId, mode }: PostFormProps) {
+export default function PostForm({
+  initialTitle = "",
+  initialContent = "",
+  initialCategory = "자유",
+  postId,
+  mode,
+}: PostFormProps) {
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
+  const [category, setCategory] = useState<Category>(initialCategory);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -34,7 +43,7 @@ export default function PostForm({ initialTitle = "", initialContent = "", postI
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content }),
+        body: JSON.stringify({ title, content, category }),
       });
 
       const data = await res.json();
@@ -62,6 +71,24 @@ export default function PostForm({ initialTitle = "", initialContent = "", postI
         </div>
       )}
 
+      {/* 카테고리 선택 */}
+      <div className="flex gap-2">
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            type="button"
+            onClick={() => setCategory(cat)}
+            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors border ${
+              category === cat
+                ? "bg-red-500 text-white border-red-500"
+                : "bg-white text-gray-600 border-gray-300 hover:border-red-300"
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
       <div>
         <input
           type="text"
@@ -69,7 +96,7 @@ export default function PostForm({ initialTitle = "", initialContent = "", postI
           onChange={(e) => setTitle(e.target.value)}
           placeholder="제목을 입력하세요"
           maxLength={100}
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
         />
       </div>
 
@@ -79,7 +106,7 @@ export default function PostForm({ initialTitle = "", initialContent = "", postI
           onChange={(e) => setContent(e.target.value)}
           placeholder="내용을 입력하세요"
           rows={12}
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+          className="w-full border border-gray-300 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent resize-none"
         />
       </div>
 
@@ -94,7 +121,7 @@ export default function PostForm({ initialTitle = "", initialContent = "", postI
         <button
           type="submit"
           disabled={loading}
-          className="flex-1 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="flex-1 py-3 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {loading ? "저장 중..." : mode === "create" ? "작성하기" : "수정하기"}
         </button>

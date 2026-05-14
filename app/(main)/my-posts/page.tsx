@@ -4,11 +4,14 @@ import PostCard from "@/components/PostCard";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import type { Category } from "@/lib/constants";
+
 interface Post {
   _id: string;
   title: string;
   authorNickname: string;
   createdAt: string;
+  category: Category;
 }
 
 interface PostsResponse {
@@ -60,7 +63,7 @@ export default async function MyPostsPage({
           <p className="text-gray-400 mb-4">작성한 글이 없습니다.</p>
           <Link
             href="/posts/new"
-            className="text-sm text-blue-600 hover:underline"
+            className="text-sm text-red-600 hover:underline"
           >
             첫 글을 작성해보세요 →
           </Link>
@@ -74,6 +77,7 @@ export default async function MyPostsPage({
               title={post.title}
               authorNickname={post.authorNickname}
               createdAt={post.createdAt}
+              category={post.category}
             />
           ))}
         </div>

@@ -51,7 +51,7 @@ function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="example@email.com"
           required
-          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
         />
       </div>
 
@@ -63,14 +63,14 @@ function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="비밀번호 입력"
           required
-          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full bg-red-500 text-white py-2.5 rounded-lg font-medium hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {loading ? "로그인 중..." : "로그인"}
       </button>
@@ -93,7 +93,7 @@ export default function LoginPage() {
 
         <p className="text-center text-sm text-gray-500 mt-4">
           계정이 없으신가요?{" "}
-          <Link href="/register" className="text-blue-600 font-medium hover:underline">
+          <Link href="/register" className="text-red-600 font-medium hover:underline">
             회원가입
           </Link>
         </p>

@@ -3,12 +3,21 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import DeleteButton from "./DeleteButton";
 
+import type { Category } from "@/lib/constants";
+
+const CATEGORY_COLOR: Record<Category, string> = {
+  자유: "bg-orange-100 text-orange-600",
+  정보: "bg-blue-100 text-blue-600",
+  유머: "bg-yellow-100 text-yellow-600",
+};
+
 interface Post {
   _id: string;
   title: string;
   content: string;
   authorNickname: string;
   author: string;
+  category: Category;
   createdAt: string;
   updatedAt: string;
 }
@@ -43,13 +52,18 @@ export default async function PostDetailPage({
   return (
     <div>
       <div className="mb-4">
-        <Link href="/" className="text-sm text-gray-500 hover:text-blue-600">
+        <Link href="/" className="text-sm text-gray-500 hover:text-red-600">
           ← 목록으로
         </Link>
       </div>
 
       <article className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
         <div className="p-5 border-b border-gray-100">
+          <div className="flex items-center gap-2 mb-2">
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${CATEGORY_COLOR[post.category] ?? "bg-gray-100 text-gray-600"}`}>
+              {post.category}
+            </span>
+          </div>
           <h1 className="text-xl font-bold text-gray-900 mb-3">{post.title}</h1>
           <div className="flex items-center justify-between text-sm text-gray-500">
             <span>{post.authorNickname}</span>
